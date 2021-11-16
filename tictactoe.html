@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe/title>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" href="style.css">
+  <script src="ttt_script.js" defer></script>
+</head>
+<body>
+  <div class="buttonSet">
+    <button class="bookButton" id="addBook">Add Book</button>
+  </div>
+  <div id="container" class="container">
+      
+  </div>
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h1>Add Book</h1>
+            <form id = "addBookForm" onsubmit = "return false" >
+              <label for="Title">Book Title:</label><br>
+              <input type="text" id="title" name="title" ><br>
+              <label for="author">Author:</label><br>
+              <input type="text" id="author" name="author" ><br>
+              <label for="pages">Pages:</label><br>
+              <input type="number" id="pages" name="pages" ><br>
+              <input type="radio" id="read" name="readstatus" value="Read">
+              <label for="read">Read</label><br>
+              <input type="radio" id="not_read" name="readstatus" value="Not Read">
+              <label for="not_read">Not Read</label><br>
+              <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
