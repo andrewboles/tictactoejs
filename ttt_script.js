@@ -41,15 +41,18 @@ const boardToDOM = (() => {
           }
           refreshBoard()
           if (winConditionCheck.windCondMet()){
-            alert(`game over, player${gameplayActions.turn} wins!`)
             gameBoard.resetBoard()
             refreshBoard()
+            alert(`game over, player${gameplayActions.turn} wins!`)
             gameplayActions.turn_count = 0
             promptPlayers.promptGo()
+          } else{
+            gameplayActions.turn_count += 1;
+            gameplayActions.changeTurn()
+            gameplayActions.drawReached() 
+
           }
-          gameplayActions.turn_count += 1;
-          gameplayActions.changeTurn()
-          gameplayActions.drawReached() 
+          
 				}
 				
 			})
