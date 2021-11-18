@@ -1,5 +1,7 @@
 const player = (name, piece_choice) => {
 
+
+
 	const getName = () => name;
 	const getPiece = () => piece_choice;
 
@@ -31,30 +33,36 @@ const gameBoard = (()=> {
 
 const boardToDOM = (() => {
 	const startBoard = () =>{
+    animationActions.highlightPlayer(1,2)
 		for(let i = 0; i < 9; i++){
 			document.getElementById(`square${i}`).addEventListener('click', e => {
+     
 				if(gameBoard.checkPositionViability(parseInt(e.target.id.slice(-1))) === true){
-					if(gameplayActions.turn == 1){
-            gameBoard.setBoardState(promptPlayers.playerList.player1.getPiece(),parseInt(e.target.id.slice(-1)))
-				  } else {
-            gameBoard.setBoardState(promptPlayers.playerList.player2.getPiece(),parseInt(e.target.id.slice(-1)))
+          if(gameplayActions.getTurn() == 1){
+            gameBoard.setBoardState(promptPlayers.getPlayer(1).getPiece(),parseInt(e.target.id.slice(-1)))
+          } else {
+            gameBoard.setBoardState(promptPlayers.getPlayer(2).getPiece(),parseInt(e.target.id.slice(-1)))
           }
           refreshBoard()
+          
+          // setTimeout("",100);
           if (winConditionCheck.windCondMet()){
+            refreshBoard()
+            setTimeout(function() {
+              alert(`game over, player${gameplayActions.getTurn()} wins!`);
+            },100)
             gameBoard.resetBoard()
             refreshBoard()
-            alert(`game over, player${gameplayActions.turn} wins!`)
-            gameplayActions.turn_count = 0
+            gameplayActions.resetTurns()
             promptPlayers.promptGo()
           } else{
-            gameplayActions.turn_count += 1;
-            gameplayActions.changeTurn()
-            gameplayActions.drawReached() 
-
+            gameplayActions.drawReached()
+            gameplayActions.changeTurn()  
           }
-          
+
 				}
-				
+
+        
 			})
 		}
 	}
@@ -71,29 +79,39 @@ const boardToDOM = (() => {
 })();
 
 const promptPlayers = (() => {
-  let playerList = {}
+  let player1 = ""
+  let player2 = ""
+  // const getPlayers = () =>{
+
+  // }
   const promptGo = () => {
+    
+    setTimeout(function(){
     let playerName = prompt("Please enter your name, Player 1")
     if(playerName != null){
       document.getElementById("player1box").innerHTML = playerName
-      playerList.player1 = player(`${playerName}`, "X")
+      player1 = player(`${playerName}`, "X")
     }
     else{
-      playerList.player1  = player(`Player 1box`, "X")
+      player1  = player(`Player 1box`, "X")
     }
     let playerName2 = prompt("Please enter your name, Player 2")
     if(playerName2 != null){
       document.getElementById("player2box").innerHTML = playerName2
-      playerList.player2 = player(`${playerName2}`, "O")
+      player2 = player(`${playerName2}`, "O")
     }
     else{
-      playerList.player2 = player(`Player 2`, "O")
+      player2 = player(`Player 2`, "O")
     }
-   animationActions.highlightPlayer(1,2)
-   boardToDOM.startBoard()
+  },100)
   }
 
-  return {promptGo, playerList}
+  const getPlayer = (num) =>{
+    return (num == 1 ?  player1:player2)
+  }
+
+
+  return {promptGo, getPlayer}
  
 })();
 
@@ -101,63 +119,57 @@ const gameplayActions = (() => {
   let turn = 1;
   let turn_count = 0;
   const changeTurn = () => {
-    if (gameplayActions.turn == 1){
-      gameplayActions.turn = 2
+    turn_count += 1;
+    if (turn == 1){
+      turn = 2
       animationActions.highlightPlayer(2,1)
     }
     else{
-      gameplayActions.turn = 1
+      turn = 1
       animationActions.highlightPlayer(1,2)
     }
 
   }
-
+  const resetTurns= () =>{
+    turn_count = 0
+    turn = 1
+  }
+  const getTurnCount = () => turn_count
+  const getTurn = () => turn
   const drawReached = () => {
-    if(gameplayActions.turn_count == 9) {
+    if(turn_count == 9) {
       console.log('draw')
       window.alert("Draw! Try different stuff, y'all")
     }
   }
-  return {turn_count, changeTurn, drawReached, turn}
+  return {changeTurn, drawReached, getTurn, getTurnCount, resetTurns}
 
 })();
 
 const winConditionCheck = (() => {
   const windCondMet = () => {
-    console.log("running check")
-    if (gameplayActions.turn_count < 3){
-      return false
-    }
-    if ((gameBoard.getBoardState()[0] == gameBoard.getBoardState()[1]) && (gameBoard.getBoardState()[1] == gameBoard.getBoardState()[2])){
-      if (gameBoard.getBoardState()[0] == " ") { return false }
+    if (gameBoard.getBoardState()[0] != " " && (gameBoard.getBoardState()[0] == gameBoard.getBoardState()[1]) && (gameBoard.getBoardState()[1] == gameBoard.getBoardState()[2])){
       return true
     }
-    if ((gameBoard.getBoardState()[3] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[5])){
-      if (gameBoard.getBoardState()[3] == " ") { return false }
+    if (gameBoard.getBoardState()[3] != " " && (gameBoard.getBoardState()[3] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[5])){
       return true
     }
-    if ((gameBoard.getBoardState()[6] == gameBoard.getBoardState()[7]) && (gameBoard.getBoardState()[7] == gameBoard.getBoardState()[8])){
-      if (gameBoard.getBoardState()[6] == " ") { return false }
+    if (gameBoard.getBoardState()[6] != " " && (gameBoard.getBoardState()[6] == gameBoard.getBoardState()[7]) && (gameBoard.getBoardState()[7] == gameBoard.getBoardState()[8])){
       return true
     }
-    if ((gameBoard.getBoardState()[0] == gameBoard.getBoardState()[3]) && (gameBoard.getBoardState()[3] == gameBoard.getBoardState()[6])){
-      if (gameBoard.getBoardState()[0] == " ") { return false }
+    if (gameBoard.getBoardState()[0] != " " && (gameBoard.getBoardState()[0] == gameBoard.getBoardState()[3]) && (gameBoard.getBoardState()[3] == gameBoard.getBoardState()[6])){
       return true
     }
-    if ((gameBoard.getBoardState()[1] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[7])){
-      if (gameBoard.getBoardState()[1] == " ") { return false }
+    if (gameBoard.getBoardState()[1] != " " && (gameBoard.getBoardState()[1] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[7])){
       return true
     }
-    if ((gameBoard.getBoardState()[2] == gameBoard.getBoardState()[5]) && (gameBoard.getBoardState()[5] == gameBoard.getBoardState()[8])){
-      if (gameBoard.getBoardState()[2] == " ") { return false }
+    if (gameBoard.getBoardState()[2] != " " && (gameBoard.getBoardState()[2] == gameBoard.getBoardState()[5]) && (gameBoard.getBoardState()[5] == gameBoard.getBoardState()[8])){
       return true
     }
-    if ((gameBoard.getBoardState()[0] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[8])){
-      if (gameBoard.getBoardState()[0] == " ") { return false }
+    if (gameBoard.getBoardState()[0] != " " && (gameBoard.getBoardState()[0] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[8])){
       return true
     }
-    if ((gameBoard.getBoardState()[2] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[6])){
-      if (gameBoard.getBoardState()[2] == " ") { return false }
+    if (gameBoard.getBoardState()[2] != " " && (gameBoard.getBoardState()[2] == gameBoard.getBoardState()[4]) && (gameBoard.getBoardState()[4] == gameBoard.getBoardState()[6])){
       return true
     }
 
@@ -184,3 +196,6 @@ const MODULETEMPLATE = (() => {
 })();
 
 promptPlayers.promptGo()
+boardToDOM.startBoard()
+
+
