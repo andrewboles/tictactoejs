@@ -6,7 +6,7 @@ const player = (name, piece_choice) => {
 	const getPiece = () => piece_choice;
 
 
-	return {getName, getPiece}
+	return {getName, getPiece, name}
 };
 
 const gameBoard = (()=> {
@@ -37,7 +37,7 @@ const boardToDOM = (() => {
 		for(let i = 0; i < 9; i++){
 			document.getElementById(`square${i}`).addEventListener('click', e => {
      
-				if(gameBoard.checkPositionViability(parseInt(e.target.id.slice(-1))) === true){
+				if(gameBoard.checkPositionViability(parseInt(e.target.id.slice(-1))) === true && promptPlayers.bothPlayersSet()==true){
           if(gameplayActions.getTurn() == 1){
             gameBoard.setBoardState(promptPlayers.getPlayer(1).getPiece(),parseInt(e.target.id.slice(-1)))
           } else {
@@ -46,6 +46,7 @@ const boardToDOM = (() => {
           refreshBoard()
           
           // setTimeout("",100);
+          console.log(gameplayActions.getTurn())
           if (winConditionCheck.windCondMet()){
             refreshBoard()
             setTimeout(function() {
@@ -54,7 +55,6 @@ const boardToDOM = (() => {
             gameBoard.resetBoard()
             refreshBoard()
             gameplayActions.resetTurns()
-            promptPlayers.promptGo()
           } else{
             gameplayActions.drawReached()
             gameplayActions.changeTurn()  
@@ -90,12 +90,18 @@ const promptPlayers = (() => {
     }
   }
 
-  const getPlayer = (num) =>{
+  const getPlayer = (num) => {
     return (num == 1 ?  player1:player2)
   }
 
-
-  return {setPlayer, getPlayer}
+  const bothPlayersSet = () => {
+    if (player1 != "" && player2 != ""){
+      return true
+    } else {
+      return false
+    }
+  }
+  return {setPlayer, getPlayer, bothPlayersSet}
  
 })();
 
