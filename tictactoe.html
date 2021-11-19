@@ -10,7 +10,13 @@
  <!--  <div class="buttonSet">
     <button class="bookButton" id="addBook">Add Book</button>
   </div> -->
-  <div class = "playerBox" id = "player1box">Player 1</div>
+  <div class = "playerBox" id = "player1box">
+    <form id = "addPlayer1" onsubmit = "return false" >
+              <label for="name">Enter Player 1 Name:</label><br>
+              <input type="text" id="name" name="name" ><br>
+              <input type="submit" value="Submit">
+        </form>
+  </div>
 
   
   
@@ -27,6 +33,12 @@
         <div class="gameSquare" id = "square8"></div>
 
   </div>
-  <div class = "playerBox" id = "player2box">Player 2</div>
+  <div class = "playerBox" id = "player2box">
+    <form id = "addPlayer2" onsubmit = "return false" >
+              <label for="name">Enter Player 2 Name:</label><br>
+              <input type="text" id="name" name="name" ><br>
+              <input type="submit" value="Submit">
+        </form>
+  </div>
 </body>
 </html>

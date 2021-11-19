@@ -81,29 +81,13 @@ const boardToDOM = (() => {
 const promptPlayers = (() => {
   let player1 = ""
   let player2 = ""
-  // const getPlayers = () =>{
 
-  // }
-  const promptGo = () => {
-    
-    setTimeout(function(){
-    let playerName = prompt("Please enter your name, Player 1")
-    if(playerName != null){
-      document.getElementById("player1box").innerHTML = playerName
-      player1 = player(`${playerName}`, "X")
+  const setPlayer = (playerNum, name) => {
+    if (playerNum == 1){
+      player1 = player(name,"X")
+    } else {
+      player2 = player(name,"O")
     }
-    else{
-      player1  = player(`Player 1box`, "X")
-    }
-    let playerName2 = prompt("Please enter your name, Player 2")
-    if(playerName2 != null){
-      document.getElementById("player2box").innerHTML = playerName2
-      player2 = player(`${playerName2}`, "O")
-    }
-    else{
-      player2 = player(`Player 2`, "O")
-    }
-  },100)
   }
 
   const getPlayer = (num) =>{
@@ -111,7 +95,7 @@ const promptPlayers = (() => {
   }
 
 
-  return {promptGo, getPlayer}
+  return {setPlayer, getPlayer}
  
 })();
 
@@ -185,9 +169,36 @@ const animationActions = (() => {
     }
   }
 
-  return {highlightPlayer}
+  const removePlayerNameEntry = (playerNum, name) => {
+    document.getElementById(`player${playerNum}box`).innerHTML = name
+  }
+
+  return {highlightPlayer, removePlayerNameEntry}
 
 })();
+
+const player1Element = document.getElementById("addPlayer1")
+player1Element.addEventListener("submit", e =>{
+  if (player1Element.elements['name'].value === ""){
+    event.preventDefault()
+    return
+  }
+  promptPlayers.setPlayer(1, player1Element.elements['name'].value)
+  animationActions.removePlayerNameEntry(1, player1Element.elements['name'].value)
+  
+})
+
+const player2Element = document.getElementById("addPlayer2")
+player2Element.addEventListener("submit", e =>{
+  if (player2Element.elements['name'].value === ""){
+    event.preventDefault()
+    return
+  }
+  promptPlayers.setPlayer(2, player2Element.elements['name'].value)
+  animationActions.removePlayerNameEntry(2, player2Element.elements['name'].value)
+  
+})
+
 
 
 
@@ -195,7 +206,6 @@ const MODULETEMPLATE = (() => {
 
 })();
 
-promptPlayers.promptGo()
 boardToDOM.startBoard()
 
 
